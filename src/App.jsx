@@ -97,6 +97,7 @@
 // export default App;
 
 import "./App.css";
+import PostCard from "./PostCard";
 
 function App() {
   return (
