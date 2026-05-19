@@ -1,7 +1,7 @@
 import React from "react";
 import PostCard from "./PostCard";
-import { posts } from "./data/posts";
-import { postsData } from "./postsData";
+import { posts } from "../data/posts";
+import { postsData } from "../postsData";
 
 function Exercise() {
   return (
