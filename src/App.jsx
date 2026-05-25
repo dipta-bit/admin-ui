@@ -1,7 +1,8 @@
 import "./App.css";
 import SignInPage from "./pages/SignIn"; 
 import SignUpPage from "./pages/SignUp";
-import ErrorPage from "./pages/erorr"; 
+import ErrorPage from "./pages/erorr";
+import DashboardPage from "./pages/dashboard";
 import { createBrowserRouter, RouterProvider, Link } from "react-router-dom";
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           </Link>
         </div>
       ),
+      element: <DashboardPage />,
       errorElement: <ErrorPage />,
     },
     {
