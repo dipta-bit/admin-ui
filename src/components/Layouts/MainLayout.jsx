@@ -10,8 +10,8 @@ function MainLayout(props) {
 
   const menu = [
     { id: 1, name: "Overview", icon: <Icon.Overview />, link: "/" },
-    { id: 2, name: "Balances", icon: <Icon.Balances />, link: "/balance" },
-    { id: 3, name: "Transaction", icon: <Icon.Transactions />, link: "/transaction", },
+    { id: 2, name: "Balances", icon: <Icon.Balance />, link: "/balance" },
+    { id: 3, name: "Transaction", icon: <Icon.Transaction />, link: "/transaction", },
     { id: 4, name: "Bills", icon: <Icon.Bill />, link: "/bill" },
     { id: 5, name: "Expenses", icon: <Icon.Expense />, link: "/expense" },
     { id: 6, name: "Goals", icon: <Icon.Goal />, link: "/goal" },
