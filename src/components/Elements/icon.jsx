@@ -22,6 +22,10 @@ import ArrowDownSVG from "../../assets/Downarrow.svg?react";
 import ArrowUpSVG from "../../assets/Uparrow.svg?react";
 import MastercardSVG from "../../assets/Mastercard-Logo.svg?react";
 import VisaSVG from "../../assets/Visa_Logo.svg?react";
+import ArrowUpRightSVG from "../../assets/arrow-up-right.svg?react";
+import EditSVG from "../../assets/edit.svg?react";
+import TargetSVG from "../../assets/target.svg?react";
+import AwardSVG from "../../assets/Award.svg?react";
 
 const createIcon =
   (SVG) =>
@@ -53,6 +57,10 @@ const Icon = {
   ArrowUp: createIcon(ArrowUpSVG),
   Mastercard: createIcon(MastercardSVG),
   Visa: createIcon(VisaSVG),
+  ArrowUpRight: createIcon(ArrowUpRightSVG),
+  Edit: createIcon(EditSVG),
+  Target: createIcon(TargetSVG),
+  Award: createIcon(AwardSVG),
 };
 
 export default Icon;
