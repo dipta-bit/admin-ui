@@ -9,18 +9,29 @@ import CardStatistic from "../components/Fragments/CardStatistic";
 import CardExpensesBreakdown from "../components/Fragments/CardExpenseBreakdown";
 
 import {
-        transactions,
-          bills,
-          expensesBreakdowns,
-          balances,
-          goals,
-          expensesStatistics, 
-        } from "../data";
+  transactions,
+  bills,
+  expensesBreakdowns,
+  balances,
+  expensesStatistics, 
+} from "../data";
 import { goalService } from "../services/dataService";
 import { AuthContext } from "../context/authContext";
+import AppSnackbar from "../components/Elements/AppSnackbar";
 
 function Dashboard() {
-  	const [goals, setGoals] = useState({});
+  const { logout } = useContext(AuthContext); 
+
+  const [goals, setGoals] = useState({});
+  const [snackbar, setSnackbar] = useState({ 
+    open: false,
+    message: "",
+    severity: "success"
+  });
+
+  const handleCloseSnackbar = () => {
+    setSnackbar((prev) => ({ ...prev, open: false }));
+  };
 
   const fetchGoals = async () => {
     try {
@@ -28,6 +39,7 @@ function Dashboard() {
       setGoals(data);
     } catch (err) {
       console.error("Gagal mengambil data goals:", err);
+      setSnackbar((prev) => ({ ...prev, open: true, message: err.msg || "Terjadi kesalahan", severity: "error" }));
       if (err.status === 401) {
         logout();
       }
@@ -39,10 +51,10 @@ function Dashboard() {
   }, []);
   
   console.log(goals);
+  
   return (
     <MainLayout>
-
-      <div className="grid sm:grid-cols-12  gap-6">
+      <div className="grid sm:grid-cols-12 gap-6">
         
         <div className="sm:col-span-4">
           <CardBalance data={balances} />
@@ -64,6 +76,12 @@ function Dashboard() {
         </div>
         
       </div>
+      <AppSnackbar
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={handleCloseSnackbar}
+      />
     </MainLayout>
   );
 }
