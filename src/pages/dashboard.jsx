@@ -10,19 +10,21 @@ import CardExpensesBreakdown from "../components/Fragments/CardExpenseBreakdown"
 
 import {
   transactions,
-  bills,
-  expensesBreakdowns,
+
   balances,
   expensesStatistics, 
 } from "../data";
 import { goalService } from "../services/dataService";
 import { AuthContext } from "../context/authContext";
 import AppSnackbar from "../components/Elements/AppSnackbar";
+import axios from "axios"; 
 
 function Dashboard() {
   const { logout } = useContext(AuthContext); 
 
   const [goals, setGoals] = useState({});
+  const [bills, setBills] = useState([]); 
+  const [expenses, setExpenses] = useState([]); 
   const [snackbar, setSnackbar] = useState({ 
     open: false,
     message: "",
@@ -46,11 +48,48 @@ function Dashboard() {
     }
   };
 
+  const fetchBills = async () => {
+    try {
+      const token = localStorage.getItem("token"); 
+      const response = await axios.get("https://jwt-auth-eight-neon.vercel.app/bills", {
+        headers: {
+          Authorization: `Bearer ${token}` 
+        }
+      });
+
+      setBills(response.data.data || response.data);
+    } catch (err) {
+      console.error("Gagal mengambil data bills:", err);
+      if (err.response && err.response.status === 401) {
+        logout(); 
+      }
+    }
+  };
+
+  
+  const fetchExpenses = async () => {
+    try {
+      const token = localStorage.getItem("token"); 
+      const response = await axios.get("https://jwt-auth-eight-neon.vercel.app/expenses", {
+        headers: {
+          Authorization: `Bearer ${token}` 
+        }
+      });
+
+      setExpenses(response.data.data || response.data);
+    } catch (err) {
+      console.error("Gagal mengambil data expenses:", err);
+      if (err.response && err.response.status === 401) {
+        logout(); 
+      }
+    }
+  };
+
   useEffect(() => {
     fetchGoals();
+    fetchBills(); 
+    fetchExpenses(); 
   }, []);
-  
-  console.log(goals);
   
   return (
     <MainLayout>
@@ -62,6 +101,7 @@ function Dashboard() {
         <div className="sm:col-span-4">
           <CardGoal data={goals} />
         </div>
+
         <div className="sm:col-span-4">
           <CardUpcomingBill data={bills} />
         </div>
@@ -72,7 +112,8 @@ function Dashboard() {
           <CardStatistic data={expensesStatistics} />
         </div>
         <div className="sm:col-span-8">
-          <CardExpensesBreakdown data={expensesBreakdowns} />
+
+          <CardExpensesBreakdown data={expenses} />
         </div>
         
       </div>

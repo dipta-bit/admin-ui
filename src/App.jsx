@@ -4,6 +4,7 @@ import SignUpPage from "./pages/SignUp";
 import ErrorPage from "./pages/erorr";
 import DashboardPage from "./pages/dashboard";
 import BalancesPage from "./pages/Balances";
+import ExpensesPage from "./pages/Expenses"; 
 import { createBrowserRouter, Navigate, RouterProvider, } from "react-router-dom";
 import { useContext } from "react"
 import { AuthContext } from "./context/authContext";
@@ -14,7 +15,6 @@ function App() {
   const RequireAuth = ({ children }) => {
     return user ? children : <Navigate to="/login" />;
   };
-
 
   const NotRequireAuth = ({ children }) => {
     return user ? <Navigate to="/" /> : children;
@@ -54,8 +54,16 @@ function App() {
         </RequireAuth>
       ),
     },
-  ]);
 
+    {
+      path: "/expense",
+      element: (
+        <RequireAuth>
+          <ExpensesPage />
+        </RequireAuth>
+      ),
+    },
+  ]);
 
   return (
     <RouterProvider router={myRouter} />

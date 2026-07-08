@@ -1,59 +1,149 @@
-import React from 'react';
+import React, { useState } from 'react';
 import LabeledInput from '../Elements/LabeledInput';
 import Button from '../Elements/Button';
+import AppSnackbar from '../Elements/AppSnackbar'; 
 import { useNavigate, Link } from 'react-router-dom'; 
+import { Formik, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import axios from "axios"; 
+
+
+const SignUpSchema = Yup.object().shape({
+  name: Yup.string().required("Name wajib diisi"),
+  email: Yup.string().email("Email tidak valid").required("Email wajib diisi"),
+  password: Yup.string().required("Password wajib diisi"),
+});
 
 function FormSignUp() {
   const navigate = useNavigate(); 
+  
 
-  const handleSignUp = (event) => {
-    event.preventDefault(); 
-    navigate("/login"); 
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success"
+  });
+
+
+  const handleCloseSnackbar = () => {
+    setSnackbar((prev) => ({ ...prev, open: false }));
   };
 
   return (
     <div className="mt-6">
-      <form onSubmit={handleSignUp}>
-        <div className="mb-4">
-          <LabeledInput
-            label="Name"
-            type="text"
-            placeholder="Tanzir Rahman"
-            name="name"
-          />
-        </div>
+      <Formik
+        initialValues={{
+          name: "",
+          email: "",
+          password: "",
+        }}
+        validationSchema={SignUpSchema}
+        onSubmit={async (values, { setSubmitting }) => {
+          try {
 
-        <div className="mb-4">
-          <LabeledInput
-            label="Email Address"
-            type="email"
-            placeholder="hello@example.com"
-            name="email"
-          />
-        </div>
+            await axios.post("https://jwt-auth-eight-neon.vercel.app/register", {
+              name: values.name,
+              email: values.email,
+              password: values.password
+            });
 
-        <div className="mb-6">
-          <LabeledInput
-            label="Password"
-            type="password"
-            placeholder="••••••••••••"
-            name="password"
-          />
-        </div>
 
-        <p className="text-xs text-slate-500 mb-4">
-          By continuing, you agree to our <span className="text-primary font-bold cursor-pointer hover:underline">terms of service</span>.
-        </p>
+            setSnackbar({
+              open: true,
+              message: "Register Berhasil",
+              severity: "success"
+            });
 
-        <Button type="submit">Sign up</Button>
-      </form>
 
-      {/* teks start */}
+            setTimeout(() => {
+              navigate("/login"); 
+            }, 2000);
+
+          } catch (error) {
+
+            const errorMsg = error.response?.data?.message || "Email sudah pernah digunakan sebelumnya";
+            
+            setSnackbar({
+              open: true,
+              message: errorMsg,
+              severity: "error"
+            });
+          } finally {
+            setSubmitting(false); 
+          }
+        }}
+      >
+        {({ isSubmitting, handleSubmit }) => (
+          <form onSubmit={handleSubmit}>
+            
+            {/* KOTAK NAMA */}
+            <div className="mb-4">
+              <Field name="name">
+                {({ field }) => (
+                  <LabeledInput
+                    {...field}
+                    id="name"
+                    label="Name"
+                    type="text"
+                    placeholder="Tanzir Rahman"
+                  />
+                )}
+              </Field>
+              <ErrorMessage name="name" component="p" className="text-red-500 text-xs mt-1" />
+            </div>
+
+            {/* KOTAK EMAIL */}
+            <div className="mb-4">
+              <Field name="email">
+                {({ field }) => (
+                  <LabeledInput
+                    {...field}
+                    id="email"
+                    label="Email Address"
+                    type="email"
+                    placeholder="hello@example.com"
+                  />
+                )}
+              </Field>
+              <ErrorMessage name="email" component="p" className="text-red-500 text-xs mt-1" />
+            </div>
+
+            {/* KOTAK PASSWORD */}
+            <div className="mb-6">
+              <Field name="password">
+                {({ field }) => (
+                  <LabeledInput
+                    {...field}
+                    id="password"
+                    label="Password"
+                    type="password"
+                    placeholder="••••••••••••"
+                    autoComplete="new-password"
+                  />
+                )}
+              </Field>
+              <ErrorMessage name="password" component="p" className="text-red-500 text-xs mt-1" />
+            </div>
+
+            <p className="text-xs text-slate-500 mb-4">
+              By continuing, you agree to our <span className="text-primary font-bold cursor-pointer hover:underline">terms of service</span>.
+            </p>
+
+            {/* TOMBOL SUBMIT */}
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Loading..." : "Register"}
+            </Button>
+            
+          </form>
+        )}
+      </Formik>
+
+      {/* teks or sign up with start */}
       <div className="my-9 px-7 flex flex-col justify-center items-center text-xs text-gray-03 relative">
         <div className="border border-gray-05 w-full"></div>
         <div className="px-2 bg-special-mainBg absolute"> or sign up with</div>
       </div>
-      {/* teks end */}
+      {/* teks or sign up with end */}
 
       {/* sign in with google start */}
       <div className="mb-8">
@@ -79,6 +169,14 @@ function FormSignUp() {
         </Link>
       </div>
       {/* link end */}
+
+      {/* 4. Komponen Snackbar dipanggil di sini */}
+      <AppSnackbar
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={handleCloseSnackbar}
+      />
 
     </div>
   );

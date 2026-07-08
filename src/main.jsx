@@ -5,12 +5,17 @@ import './index.css';
 import { ThemeContextProvider } from "./context/themeContext.jsx";
 import { AuthContextProvider } from './context/authContext.jsx';
 
+import { DarkModeProvider } from './context/darkModeContext.jsx';
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
       <AuthContextProvider>
-    <ThemeContextProvider>
-        <App />
-    </ThemeContextProvider>
+        <ThemeContextProvider>
+
+            <DarkModeProvider>
+                <App />
+            </DarkModeProvider>
+        </ThemeContextProvider>
       </AuthContextProvider>  
   </React.StrictMode>
 );
